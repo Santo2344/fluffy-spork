@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:'Poppins',sans-serif;
+background:linear-gradient(180deg,#1a1235,#41204d,#ffd8df);
+color:white;
+overflow-x:hidden;
+}
+
+.stars span{
+position:absolute;
+width:3px;height:3px;
+background:white;
+border-radius:50%;
+animation:twinkle 3s infinite;
+}
+@keyframes twinkle{50%{opacity:.2;transform:scale(.5)}}
+
+.hero{
+position:relative;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+}
+.hero h1{font-size:42px;font-family:'Dancing Script',cursive}
+.hero p{opacity:.9;margin-top:8px}
+
+.envelope{
+margin-top:45px;
+width:240px;height:160px;
+position:relative;
+cursor:pointer;
+perspective:1000px;
+}
+.base{
+width:100%;height:100%;
+background:#ec5b7b;
+border-radius:18px;
+position:absolute;
+box-shadow:0 20px 40px rgba(0,0,0,.35);
+}
+.flap{
+position:absolute;
+width:100%;height:82px;
+background:#ff8fa3;
+border-radius:18px 18px 0 0;
+transform-origin:top;
+transition:1s;
+}
+.note{
+position:absolute;
+left:18px;right:18px;bottom:18px;
+background:white;
+color:#ec5b7b;
+padding:12px;
+border-radius:12px;
+font-weight:bold;
+transition:1s;
+text-align:center;
+}
+.open .flap{transform:rotateX(180deg)}
+.open .note{transform:translateY(-70px);opacity:0}
+
+.section{
+display:none;
+background:#fff7f8;
+color:#444;
+border-radius:30px 30px 0 0;
+padding:30px 22px;
+margin-top:-20px;
+position:relative;
+z-index:2;
+}
+.show{display:block}
+
+.title{
+font-family:'Dancing Script',cursive;
+font-size:38px;
+text-align:center;
+color:#d6336c;
+margin-bottom:20px;
+}
+
+.letter{
+line-height:1.9;
+font-size:15px;
+min-height:200px;
+white-space:pre-wrap;
+}
+
+.clock{
+background:#ffe8ee;
+padding:16px;
+border-radius:18px;
+text-align:center;
+margin:20px 0;
+}
+.clock span{font-size:28px;font-weight:bold;color:#d6336c}
+
+.slider{
+overflow:hidden;
+border-radius:20px;
+margin-top:15px;
+}
+.slides{
+display:flex;
+transition:.5s;
+}
+.slides img{
+width:100%;
+height:280px;
+object-fit:cover;
+flex-shrink:0;
+}
+.nav{
+display:flex;
+justify-content:center;
+gap:10px;
+margin:10px 0 20px;
+}
+.nav button{
+border:none;
+background:#ec5b7b;
+color:white;
+padding:8px 14px;
+border-radius:20px;
+cursor:pointer;
+}
+
+.card{
+background:white;
+padding:18px;
+border-radius:18px;
+margin:12px 0;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+cursor:pointer;
+transition:.3s;
+}
+.card:hover{transform:scale(1.02)}
+.message{
+display:none;
+margin-top:10px;
+color:#d6336c;
+font-size:14px;
+}
+
+.final{
+margin-top:25px;
+background:linear-gradient(135deg,#ec5b7b,#ff8fab);
+padding:25px;
+border-radius:22px;
+text-align:center;
+color:white;
+}
+.final button{
+margin-top:15px;
+border:none;
+background:white;
+color:#d6336c;
+padding:12px 22px;
+border-radius:30px;
+font-weight:bold;
+cursor:pointer;
+}
+.hidden{display:none}
+
+canvas{
+position:fixed;
+inset:0;
+pointer-events:none;
+}
+
+footer{
+text-align:center;
+padding:30px;
+font-size:13px;
+color:#888;
+}
+</style>
+</head>
+<body>
+
+<canvas id="heartCanvas"></canvas>
+
+<div class="hero">
+<div class="stars" id="stars"></div>
+
+<h1>Happy Birthday</h1>
+<h2 style="margin-top:10px;font-size:26px">Rachel ❤️</h2>
+<p>ada satu surat kecil yang pengen aku kasih buat kamu...</p>
+
+<div class="envelope" id="envelope">
+<div class="base"></div>
+<div class="flap"></div>
+<div class="note">💌 Tap untuk membuka</div>
+</div>
+</div>
+
+<div class="section" id="content">
+<div class="title">Dear Chell</div>
+
+<div class="letter" id="typing"></div>
+
+<div class="clock">
+<p>Waktu saat kamu membuka surat ini ✨</p>
+<span id="time">00:00:00</span>
+</div>
+
+<h3 style="color:#d6336c">📸 Kenangan Kita</h3>
+<div class="slider">
+<div class="slides" id="slides">
+<img src="foto1.jpg" alt="foto1">
+<img src="foto2.jpg" alt="foto2">
+<img src="foto3.jpg" alt="foto3">
+<img src="foto4.jpg" alt="foto4">
+</div>
+</div>
+
+<div class="nav">
+<button onclick="prev()">◀</button>
+<button onclick="next()">▶</button>
+</div>
+
+<h3 style="color:#d6336c;margin-top:15px">🌷 3 Hal yang Aku Suka</h3>
+
+<div class="card" onclick="toggleMsg(0)">
+<strong>😊 Senyummu</strong>
+<div class="message">Karena senyummu selalu bikin hari terasa lebih hangat.</div>
+</div>
+
+<div class="card" onclick="toggleMsg(1)">
+<strong>🤍 Cara kamu peduli</strong>
+<div class="message">Hal kecil yang kamu lakuin sering bikin orang lain nyaman.</div>
+</div>
+
+<div class="card" onclick="toggleMsg(2)">
+<strong>✨ Momen bareng kamu</strong>
+<div class="message">Entah ngobrol, bercanda, atau diam... semuanya selalu punya kesan sendiri.</div>
+</div>
+
+<div class="final">
+<h2>🎁 Satu Kejutan Terakhir</h2>
+<p>Kalau udah siap, pencet tombol di bawah ya.</p>
+
+<button onclick="surprise()">Buka Surprise</button>
+
+<p id="lastText" class="hidden" style="margin-top:18px;line-height:1.8">
+Selamat ulang tahun ya Chell ❤️<br><br>
+Semoga semua doa baik menemukan jalannya menuju kamu.
+Semoga kamu selalu sehat, bahagia, dan dikelilingi orang-orang yang tulus sayang sama kamu.
+
+Terima kasih karena tanpa sadar kamu udah jadi salah satu alasan banyak hari terasa lebih indah.
+🤍
+</p>
+</div>
+
+<footer>Made with ❤️ by Santo</footer>
+</div>
+
+<script>
+// ===== Bintang =====
+const starBox=document.getElementById('stars');
+for(let i=0;i<60;i++){
+let s=document.createElement('span');
+s.style.left=Math.random()*100+'%';
+s.style.top=Math.random()*100+'%';
+s.style.animationDelay=Math.random()*3+'s';
+starBox.appendChild(s);
+}
+
+// ===== Amplop =====
+const envelope=document.getElementById('envelope');
+envelope.onclick=()=>{
+envelope.classList.add('open');
+setTimeout(()=>{
+document.getElementById('content').classList.add('show');
+document.getElementById('content').scrollIntoView({behavior:'smooth'});
+typeWriter();
+},900)
+}
+
+// ===== Typing =====
+const text=`Selamat ulang tahun ya, Chell. ❤️\n\nHari ini bukan cuma tentang bertambahnya umur, tapi juga tentang betapa berharganya kamu bagi orang-orang di sekitarmu.\n\nSemoga setiap langkah yang kamu ambil tahun ini dipenuhi kebahagiaan, kesehatan, dan mimpi-mimpi yang pelan-pelan jadi kenyataan.\n\nTerima kasih karena udah jadi seseorang yang selalu membawa warna di setiap cerita. 🌷`;
+let i=0;
+function typeWriter(){
+if(i<text.length){
+document.getElementById('typing').innerHTML+=text.charAt(i);
+i++;
+setTimeout(typeWriter,28);
+}
+}
+
+// ===== Jam =====
+function updateClock(){
+const d=new Date();
+document.getElementById('time').innerHTML=
+d.toLocaleTimeString('id-ID');
+}
+setInterval(updateClock,1000);updateClock();
+
+// ===== Slider =====
+let index=0;
+const slides=document.getElementById('slides');
+function next(){
+index=(index+1)%4;
+slides.style.transform=`translateX(-${index*100}%)`;
+}
+function prev(){
+index=(index+3)%4;
+slides.style.transform=`translateX(-${index*100}%)`;
+}
+
+// ===== Card =====
+function toggleMsg(n){
+const msgs=document.querySelectorAll('.message');
+msgs[n].style.display=msgs[n].style.display==='block'?'none':'block';
+}
+
+// ===== Hujan Hati =====
+const canvas=document.getElementById('heartCanvas');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
+resize();onresize=resize;
+let hearts=[];
+function createHearts(){
+for(let i=0;i<120;i++){
+hearts.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height-canvas.height,
+s:10+Math.random()*18,
+v:1+Math.random()*3,
+a:.5+Math.random()*.5
+})
+}
+}
+function drawHeart(x,y,s){
+ctx.save();ctx.translate(x,y);ctx.scale(s/18,s/18);
+ctx.beginPath();
+ctx.moveTo(0,6);
+ctx.bezierCurveTo(0,-2,-9,-2,-9,6);
+ctx.bezierCurveTo(-9,12,0,16,0,20);
+ctx.bezierCurveTo(0,16,9,12,9,6);
+ctx.bezierCurveTo(9,-2,0,-2,0,6);
+ctx.fillStyle='#ff4d88';ctx.fill();ctx.restore();
+}
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+hearts.forEach(h=>{h.y+=h.v;ctx.globalAlpha=h.a;drawHeart(h.x,h.y,h.s)});
+hearts=hearts.filter(h=>h.y<canvas.height+30);
+requestAnimationFrame(animate);
+}
+animate();
+
+// ===== Surprise =====
+function surprise(){
+document.getElementById('lastText').classList.remove('hidden');
+createHearts();
+window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>
